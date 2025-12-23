@@ -1,0 +1,9 @@
+venv/
+ppe-dl/
+__pycache__/
+*.pyc
+*.pt
+train/
+val/
+test/
+.env
