@@ -16,7 +16,7 @@ def send_alert(subject: str, message: str):
 
         sg = SendGridAPIClient(os.getenv("SENDGRID_API_KEY"))
         sg.send(email)
-        print("✅ Alert email sent")
+        print("Alert email sent")
 
     except Exception as e:
-        print("❌ Email error:", e)
+        print("Email error:", e)
