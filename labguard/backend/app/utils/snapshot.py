@@ -2,7 +2,7 @@ import os
 import cv2
 from datetime import datetime
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SNAPSHOT_ROOT = os.path.join(BASE_DIR, "storage", "snapshots")
 
 def save_snapshot(frame, lab_id: str, user_id: str):
@@ -23,5 +23,5 @@ def save_snapshot(frame, lab_id: str, user_id: str):
 
     cv2.imwrite(path, frame)
 
-    # IMPORTANT: return URL path, not filesystem path
+    # return URL path (frontend/email friendly)
     return f"/snapshots/{lab_id}/{date_str}/{filename}"

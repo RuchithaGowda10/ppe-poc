@@ -1,36 +1,24 @@
-import sqlite3
 from fastapi import Header, HTTPException
+from app.db.session import SessionLocal
+from app.db.models import SDKCommand
+import sqlite3, os
 
-DB_PATH = "labguard.db"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+DB_PATH = os.path.join(BASE_DIR, "labguard.db")
 
-def verify_sdk_key(authorization: str = Header(...)):
-    # Expect: Authorization: Bearer <API_KEY>
-    if not authorization.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Invalid auth header")
 
-    api_key = authorization.replace("Bearer ", "").strip()
-
+def verify_sdk_key(x_api_key: str = Header(...)):
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
 
-    cur.execute("""
-        SELECT lab_id, sdk_id, active
-        FROM sdk_keys
-        WHERE api_key = ?
-    """, (api_key,))
-
+    cur.execute(
+        "SELECT api_key FROM sdk_keys WHERE api_key=? AND active=1",
+        (x_api_key,)
+    )
     row = cur.fetchone()
     conn.close()
 
     if not row:
-        raise HTTPException(status_code=401, detail="Invalid API key")
+        raise HTTPException(status_code=401, detail="Invalid SDK key")
 
-    lab_id, sdk_id, active = row
-
-    if not active:
-        raise HTTPException(status_code=403, detail="SDK key revoked")
-
-    return {
-        "lab_id": lab_id,
-        "sdk_id": sdk_id
-    }
+    return True
