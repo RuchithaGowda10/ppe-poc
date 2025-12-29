@@ -1,25 +1,37 @@
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
-from jose import jwt, JWTError
-from app.auth.jwt_handler import SECRET_KEY, ALGORITHM
+import os
+from fastapi import Depends, Header, HTTPException, status
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+# ============================
+# AUTH MODE
+# ============================
+# POC  -> no SSO, mocked user
+# SSO  -> LMS injects identity
+AUTH_MODE = os.getenv("AUTH_MODE", "POC")
 
-def get_current_user(token: str = Depends(oauth2_scheme)):
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id = payload.get("sub")
 
-        if user_id is None:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid authentication token"
-            )
+def get_current_user(
+    x_user_id: str = Header(None),
+    x_user_email: str = Header(None)
+):
+    # ============================
+    # POC MODE (NO SSO)
+    # ============================
+    if AUTH_MODE == "POC":
+        return {
+            "user_id": "POC-USER-001",
+            "email": "poc.user@demo.com"
+        }
 
-        return user_id
-
-    except JWTError:
+    # ============================
+    # REAL LMS SSO MODE
+    # ============================
+    if not x_user_id:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token expired or invalid"
+            detail="Missing SSO identity"
         )
+
+    return {
+        "user_id": x_user_id,
+        "email": x_user_email
+    }

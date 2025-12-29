@@ -5,17 +5,17 @@ from datetime import datetime
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SNAPSHOT_ROOT = os.path.join(BASE_DIR, "storage", "snapshots")
 
-
-def save_snapshot(frame, user_id: str):
+def save_snapshot(frame, lab_id: str, user_id: str):
     """
     Saves snapshot with timestamp
-    Returns saved file path
+    Returns relative URL path
     """
 
-    date_str = datetime.now().strftime("%Y-%m-%d")
-    time_str = datetime.now().strftime("%H-%M-%S")
+    now = datetime.now()
+    date_str = now.strftime("%Y-%m-%d")
+    time_str = now.strftime("%H-%M-%S")
 
-    folder = os.path.join(SNAPSHOT_ROOT, date_str)
+    folder = os.path.join(SNAPSHOT_ROOT, lab_id, date_str)
     os.makedirs(folder, exist_ok=True)
 
     filename = f"{user_id}_{time_str}.jpg"
@@ -23,4 +23,5 @@ def save_snapshot(frame, user_id: str):
 
     cv2.imwrite(path, frame)
 
-    return path
+    # IMPORTANT: return URL path, not filesystem path
+    return f"/snapshots/{lab_id}/{date_str}/{filename}"

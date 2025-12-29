@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 SNAPSHOT_BASE_DIR = "app/storage/snapshots"
 RETENTION_DAYS = 3 
 
-
 def cleanup_old_snapshots():
     if not os.path.exists(SNAPSHOT_BASE_DIR):
         print("Snapshot directory does not exist")

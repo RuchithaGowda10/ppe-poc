@@ -1,9 +1,25 @@
-venv/
-ppe-dl/
+# Python
 __pycache__/
-*.pyc
-*.pt
-train/
-val/
-test/
+venv/
 .env
+
+# Runtime / data
+storage/
+app/storage/
+labguard/backend/storage/
+labguard/backend/app/storage/
+
+# ML / training
+ppe-dl/
+runs/
+datasets/
+
+# Models
+*.pt
+*.onnx
+
+# OS / IDE
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

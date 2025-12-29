@@ -8,3 +8,7 @@ opencv-python
 ultralytics
 torch
 python-multipart
+qrcode[pil]
+python-dotenv
+passlib==1.7.4
+bcrypt==3.2.2
